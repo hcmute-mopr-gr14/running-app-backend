@@ -1,7 +1,7 @@
 import { FastifyPluginAsync } from 'fastify';
 import S from 'fluent-json-schema';
 
-const example: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
+const login = (async (fastify, opts): Promise<void> => {
 	const schema = {
 		body: S.object()
 			.prop('email', S.string().required())
@@ -10,6 +10,6 @@ const example: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
 	fastify.post('/', { schema }, async function (request, reply) {
 		// TODO
 	});
-};
+}) satisfies FastifyPluginAsync;
 
-export default example;
+export default login;
