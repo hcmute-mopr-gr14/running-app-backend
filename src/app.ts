@@ -1,6 +1,8 @@
 import { join } from 'path';
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
 import { FastifyPluginAsync } from 'fastify';
+import cookie from '@fastify/cookie';
+import * as crypto from 'node:crypto';
 
 export type AppOptions = {
 	// Place your custom options for app below here.
@@ -8,12 +10,15 @@ export type AppOptions = {
 
 // Pass --options via CLI arguments in command to enable these options.
 const options: AppOptions = {};
-
 const app: FastifyPluginAsync<AppOptions> = async (
 	fastify,
 	opts
 ): Promise<void> => {
 	// Place here your custom code!
+	fastify.register(cookie, {
+		secret: crypto.randomBytes(256).toString('base64'),
+		parseOptions: {},
+	});
 
 	// Do not touch the following lines
 
