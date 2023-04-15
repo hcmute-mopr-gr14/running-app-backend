@@ -8,7 +8,12 @@ const login = (async (fastify, opts): Promise<void> => {
 			.prop('password', S.string().required()),
 	};
 	fastify.post('/', { schema }, async function (request, reply) {
-		// TODO
+		return {
+			apiVersion: '1.0',
+			data: {
+				hello: 'world',
+			},
+		};
 	});
 }) satisfies FastifyPluginAsync;
 
