@@ -1,41 +1,47 @@
 {
-  "name": "running-app-backend",
-  "version": "1.0.0",
-  "description": "This project was bootstrapped with Fastify-CLI.",
-  "main": "app.ts",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "test": "npm run build:ts && tsc -p test/tsconfig.json && tap --ts \"test/**/*.test.ts\"",
-    "start": "npm run build:ts && fastify start -l info dist/app.js",
-    "build:ts": "tsc",
-    "watch:ts": "tsc -w",
-    "dev": "npm run build:ts && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"npm:watch:ts\" \"npm:dev:start\"",
-    "dev:start": "fastify start --ignore-watch=.ts$ -w -l info -P dist/app.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@fastify/autoload": "^5.0.0",
-    "@fastify/cookie": "^8.3.0",
-    "@fastify/sensible": "^5.0.0",
-    "bcrypt": "^5.1.0",
-    "fastify": "^4.0.0",
-    "fastify-cli": "^5.7.1",
-    "fastify-plugin": "^4.0.0",
-    "fluent-json-schema": "^4.1.0",
-    "mongodb": "^5.2.0"
-  },
-  "devDependencies": {
-    "@types/node": "^18.0.0",
-    "@types/tap": "^15.0.5",
-    "concurrently": "^7.0.0",
-    "dotenv": "^16.0.3",
-    "fastify-tsconfig": "^1.0.1",
-    "tap": "^16.1.0",
-    "ts-node": "^10.4.0",
-    "typescript": "^5.0.4"
-  }
+	"name": "running-app-backend",
+	"version": "1.0.0",
+	"description": "This project was bootstrapped with Fastify-CLI.",
+	"main": "app.ts",
+	"directories": {
+		"test": "test"
+	},
+	"scripts": {
+		"test": "npm run build:ts && tsc -p test/tsconfig.json && tap --ts \"test/**/*.test.ts\"",
+		"start": "npm run build:ts && fastify start -l info dist/app.js",
+		"build:ts": "tsc",
+		"watch:ts": "tsc -w",
+		"dev": "npm run build:ts && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"npm:watch:ts\" \"npm:dev:start\"",
+		"dev:start": "fastify start --ignore-watch=.ts$ -w -l info -P dist/app.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@fastify/autoload": "^5.0.0",
+		"@fastify/cookie": "^8.3.0",
+		"@fastify/helmet": "^10.1.0",
+		"@fastify/sensible": "^5.0.0",
+		"@fastify/session": "^10.2.1",
+		"@fastify/type-provider-typebox": "^3.0.0",
+		"@sinclair/typebox": "^0.27.8",
+		"bcrypt": "^5.1.0",
+		"fastify": "^4.0.0",
+		"fastify-cli": "^5.7.1",
+		"fastify-plugin": "^4.0.0",
+		"http-status": "^1.6.2",
+		"mongodb": "^5.2.0"
+	},
+	"devDependencies": {
+		"@types/bcrypt": "^5.0.0",
+		"@types/node": "^18.0.0",
+		"@types/tap": "^15.0.5",
+		"concurrently": "^7.0.0",
+		"dotenv": "^16.0.3",
+		"fastify-tsconfig": "^1.0.1",
+		"tap": "^16.1.0",
+		"ts-node": "^10.4.0",
+		"tsconfig-paths": "^4.2.0",
+		"typescript": "^5.0.4"
+	}
 }
