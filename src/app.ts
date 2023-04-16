@@ -3,6 +3,7 @@ import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
 import { FastifyPluginAsync } from 'fastify';
 import cookie from '@fastify/cookie';
 import * as crypto from 'node:crypto';
+import fastifyHelmet = require('@fastify/helmet');
 
 export type AppOptions = {
 	// Place your custom options for app below here.
@@ -19,6 +20,8 @@ const app: FastifyPluginAsync<AppOptions> = async (
 		secret: crypto.randomBytes(256).toString('base64'),
 		parseOptions: {},
 	});
+
+	fastify.register(fastifyHelmet);
 
 	// Do not touch the following lines
 
