@@ -29,10 +29,12 @@
 		"fastify-cli": "^5.7.1",
 		"fastify-plugin": "^4.0.0",
 		"http-status": "^1.6.2",
+		"jsonwebtoken": "^9.0.0",
 		"mongodb": "^5.2.0"
 	},
 	"devDependencies": {
 		"@types/bcrypt": "^5.0.0",
+		"@types/jsonwebtoken": "^9.0.1",
 		"@types/node": "^18.0.0",
 		"@types/tap": "^15.0.5",
 		"concurrently": "^7.0.0",
