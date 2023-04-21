@@ -1,7 +1,7 @@
 import { FastifyReply, SessionData } from 'fastify';
 import fp from 'fastify-plugin';
 import * as jwt from 'jsonwebtoken';
-import tokenService from '~/lib/services/token-service';
+import { TokenService } from '~/lib/services/token-service';
 
 declare module 'fastify' {
 	export interface FastifyRequest {
@@ -26,7 +26,7 @@ export default fp(async (fastify, opts) => {
 			return;
 		}
 
-		const [error, decoded] = await tokenService.verify(
+		const [error, decoded] = await TokenService.instance.verify(
 			request.cookies['session_token']
 		);
 		if (error) {
@@ -44,7 +44,10 @@ export default fp(async (fastify, opts) => {
 			data: SessionData,
 			options?: jwt.SignOptions
 		) {
-			const [error, encoded] = await tokenService.sign(data, options);
+			const [error, encoded] = await TokenService.instance.sign(
+				data,
+				options
+			);
 			if (!error) {
 				this.setCookie('session_token', encoded);
 			}
