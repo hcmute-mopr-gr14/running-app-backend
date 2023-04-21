@@ -12,7 +12,7 @@ class ApiResponseSchema {
 			this.makeBaseSchema(),
 			Type.Object({
 				error: Type.Object({
-					code: Type.Number(),
+					code: Type.String(),
 					message: Type.String(),
 				}),
 			}),

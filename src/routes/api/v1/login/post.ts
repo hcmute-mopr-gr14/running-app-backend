@@ -33,7 +33,7 @@ const post = (async (fastify): Promise<void> => {
 				.type('application/json')
 				.send(
 					apiResponder.error({
-						code: httpStatus.UNAUTHORIZED,
+						code: 'user-not-found',
 						message: 'User not found',
 					})
 				);
@@ -46,7 +46,7 @@ const post = (async (fastify): Promise<void> => {
 				.type('application/json')
 				.send(
 					apiResponder.error({
-						code: httpStatus.UNAUTHORIZED,
+						code: 'wrong-password',
 						message: 'Wrong password',
 					})
 				);
