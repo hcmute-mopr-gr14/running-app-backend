@@ -20,6 +20,11 @@ export class TokenService {
 
 	public static get instance() {
 		if (!this._instance) {
+			if (!this._options) {
+				throw new Error(
+					'TokenService needs an options to construct its instance'
+				);
+			}
 			this._instance = new TokenService(this._options);
 		}
 		return this._instance;
