@@ -1,8 +1,30 @@
 import * as jwt from 'jsonwebtoken';
-import * as crypto from 'node:crypto';
 
-class TokenService {
-	constructor(private secret: jwt.Secret) {}
+interface TokenServiceOptions {
+	secret: jwt.Secret;
+}
+
+export class TokenService {
+	private static _instance: TokenService;
+	private static _options: TokenServiceOptions;
+
+	private secret: jwt.Secret;
+
+	private constructor(options: TokenServiceOptions) {
+		this.secret = options.secret;
+	}
+
+	public static useOptions(options: TokenServiceOptions) {
+		this._options = options;
+	}
+
+	public static get instance() {
+		if (!this._instance) {
+			this._instance = new TokenService(this._options);
+		}
+		return this._instance;
+	}
+
 	public sign(payload: string | Buffer | object, options?: jwt.SignOptions) {
 		return new Promise<[Error | null, string]>((resolve) => {
 			jwt.sign(payload, this.secret, options ?? {}, (error, encoded) => {
@@ -20,5 +42,3 @@ class TokenService {
 		);
 	}
 }
-
-export default new TokenService(crypto.randomBytes(256).toString('base64'));

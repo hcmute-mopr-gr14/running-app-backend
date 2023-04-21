@@ -6,15 +6,21 @@ import * as crypto from 'node:crypto';
 import fastifyHelmet = require('@fastify/helmet');
 import { DbClient } from './lib/services/db-client';
 import * as dotenv from 'dotenv';
+import { TokenService } from './lib/services/token-service';
 
 export type AppOptions = {
 	// Place your custom options for app below here.
 } & Partial<AutoloadPluginOptions>;
 
 dotenv.config();
+
 DbClient.useOptions({
 	url: process.env.MONGO_URI,
 	dbName: 'running-app',
+});
+
+TokenService.useOptions({
+	secret: crypto.randomBytes(256).toString('base64'),
 });
 
 // Pass --options via CLI arguments in command to enable these options.
