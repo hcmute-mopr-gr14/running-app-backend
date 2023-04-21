@@ -33,7 +33,7 @@ const post = (async (fastify): Promise<void> => {
 				.type('application/json')
 				.send(
 					ApiResponder.instance.error({
-						code: 'user-not-found',
+						code: 'EMAIL_NOT_FOUND_ERROR',
 						message: 'User not found',
 					})
 				);
@@ -46,7 +46,7 @@ const post = (async (fastify): Promise<void> => {
 				.type('application/json')
 				.send(
 					ApiResponder.instance.error({
-						code: 'wrong-password',
+						code: 'WRONG_PASSWORD_ERROR',
 						message: 'Wrong password',
 					})
 				);
