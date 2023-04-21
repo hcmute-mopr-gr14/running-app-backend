@@ -4,11 +4,18 @@ import { FastifyPluginAsync } from 'fastify';
 import cookie from '@fastify/cookie';
 import * as crypto from 'node:crypto';
 import fastifyHelmet = require('@fastify/helmet');
-import mongodbClient from './lib/services/mongodb-client';
+import { DbClient } from './lib/services/db-client';
+import * as dotenv from 'dotenv';
 
 export type AppOptions = {
 	// Place your custom options for app below here.
 } & Partial<AutoloadPluginOptions>;
+
+dotenv.config();
+DbClient.useOptions({
+	url: process.env.MONGO_URI,
+	dbName: 'running-app',
+});
 
 // Pass --options via CLI arguments in command to enable these options.
 const options: AppOptions = {};
@@ -24,7 +31,7 @@ const app: FastifyPluginAsync<AppOptions> = async (
 
 	fastify.register(fastifyHelmet);
 	fastify.addHook('onClose', async () => {
-		await mongodbClient.close(true);
+		await DbClient.instance.close(true);
 	});
 
 	// Do not touch the following lines

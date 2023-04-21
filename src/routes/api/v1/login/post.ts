@@ -6,7 +6,7 @@ import { FastifySchema } from 'fastify';
 import httpStatus = require('http-status');
 import apiResponder from '~/lib/services/api-responder';
 import apiResponseSchema from '~/lib/services/api-response-schema';
-import mongodbCollections from '~/lib/services/mongodb-collections';
+import { DbClient } from '~/lib/services/db-client';
 import * as bcrypt from 'bcrypt';
 
 const post = (async (fastify): Promise<void> => {
@@ -22,7 +22,7 @@ const post = (async (fastify): Promise<void> => {
 	} satisfies FastifySchema;
 
 	fastify.post('/', { schema }, async function (request, reply) {
-		const user = await mongodbCollections.users.findOne(
+		const user = await DbClient.instance.collections.users.findOne(
 			{ email: request.body.email },
 			{ limit: 1, projection: { password: 1 } }
 		);
