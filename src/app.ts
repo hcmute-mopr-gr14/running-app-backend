@@ -7,6 +7,7 @@ import fastifyHelmet = require('@fastify/helmet');
 import { DbClient } from './lib/services/db-client';
 import * as dotenv from 'dotenv';
 import { TokenService } from './lib/services/token-service';
+import { ApiResponder } from './lib/services/api-responder';
 
 export type AppOptions = {
 	// Place your custom options for app below here.
@@ -21,6 +22,10 @@ DbClient.useOptions({
 
 TokenService.useOptions({
 	secret: crypto.randomBytes(256).toString('base64'),
+});
+
+ApiResponder.useOptions({
+	apiVersion: '1.0',
 });
 
 // Pass --options via CLI arguments in command to enable these options.
