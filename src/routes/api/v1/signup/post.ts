@@ -4,10 +4,10 @@ import {
 } from '@fastify/type-provider-typebox';
 import { FastifySchema } from 'fastify';
 import httpStatus = require('http-status');
-import apiResponder from '~/lib/services/api-responder';
-import apiResponseSchema from '~/lib/services/api-response-schema';
-import mongodbCollections from '~/lib/services/mongodb-collections';
+import { DbClient } from '~/lib/services/db-client';
 import * as bcrypt from 'bcrypt';
+import { ApiResponseSchema } from '~/lib/services/api-response-schema';
+import { ApiResponder } from '~/lib/services/api-responder';
 
 const post = (async (fastify): Promise<void> => {
 	const schema = {
@@ -16,21 +16,21 @@ const post = (async (fastify): Promise<void> => {
 			password: Type.String(),
 		}),
 		response: {
-			200: apiResponseSchema.ofData(Type.Object({})),
-			400: apiResponseSchema.ofError(),
+			200: ApiResponseSchema.instance.ofData(Type.Object({})),
+			400: ApiResponseSchema.instance.ofError(),
 		},
 	} satisfies FastifySchema;
 
 	fastify.post('/', { schema }, async function (request, reply) {
-		const existingUser = await mongodbCollections.users.countDocuments(
+		const existingUser = await DbClient.instance.collections.users.countDocuments(
             { email: request.body.email },
             { limit: 1});
         if (existingUser) {
                 reply
                   .status(httpStatus.BAD_REQUEST)
                   .send(
-					apiResponder.error({
-						code: httpStatus.UNAUTHORIZED,
+					ApiResponder.instance.error({
+						code: 'httpStatus.UNAUTHORIZED',
 						message: 'Email already exists',
 					})
 				);
@@ -40,12 +40,12 @@ const post = (async (fastify): Promise<void> => {
         const hashedPassword = await bcrypt.hash(request.body.password, 12);
 
         // Thêm tài khoản vào mongodb
-        await mongodbCollections.users.insertOne({email: request.body.email, password: hashedPassword});
+        await DbClient.instance.collections.users.insertOne({email: request.body.email, password: hashedPassword});
 
         reply
             .code(httpStatus.OK)
             .type('application/json')
-            .send(apiResponder.data({ message: 'User created successfully' }));
+            .send(ApiResponder.instance.data({ message: 'User created successfully' }));
 
 	});
 }) satisfies FastifyPluginAsyncTypebox;
