@@ -7,6 +7,7 @@ import httpStatus = require('http-status');
 import { DbClient } from '~/lib/services/db-client';
 import { ApiResponseSchema } from '~/lib/services/api-response-schema';
 import { ApiResponder } from '~/lib/services/api-responder';
+import { ObjectId } from 'mongodb';
 import * as bcrypt from 'bcrypt';
 
 const post = (async (fastify): Promise<void> => {
@@ -44,17 +45,16 @@ const post = (async (fastify): Promise<void> => {
 
         // Thêm tài khoản vào mongodb
         await DbClient.instance.collections.users.insertOne({
-			email: request.body.email,
-			password: hashedPassword,
-			nickname: request.body.nickname,
-			level: 0,
-			stepData: [{
-				runningSeconds: 0,
-                stepCount: 0,
-                calories: 0,
-				date: new Date().toISOString().substring(0, 10),
-			}],
-		});
+            email: request.body.email,
+            password: hashedPassword,
+            nickname: request.body.nickname,
+            runningLogs: [{
+                _id: new ObjectId(),
+                seconds: 0,
+                steps: 0,
+                distance: 0,
+            }],
+        });
 		
 
         reply

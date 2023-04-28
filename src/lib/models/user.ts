@@ -1,15 +1,16 @@
+import { ObjectId } from "mongodb";
+
 export default interface User {
 	email: string;
 	password: string;
 	sessionToken?: string;
 	nickname: string;
-	level: number;
-	stepData: StepData[];
+	runningLogs: RunningLog[];
 }
 
-interface StepData {
-	runningSeconds: number;
-	stepCount: number;
-	calories: number;
-	date: string;
+interface RunningLog {
+	_id: ObjectId;
+	seconds: number;
+	steps: number;
+	distance: number;
 }

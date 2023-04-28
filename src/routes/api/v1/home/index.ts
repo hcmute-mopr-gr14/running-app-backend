@@ -1,8 +1,8 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import getUser from './get';
+import get from './get';
 
 const route = (async (fastify, opts): Promise<void> => {
-	getUser(fastify);
+	get(fastify);
 }) satisfies FastifyPluginAsyncTypebox;
 
 export default route;
