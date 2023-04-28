@@ -31,7 +31,7 @@ const get = (async (fastify): Promise<void> => {
 	fastify.get('/', { schema }, async function (request, reply) {
         const user = await DbClient.instance.collections.users.findOne(
             { email: request.query.email },
-            { projection: { nickname: 1, level: 1, stepData: 1 } }
+            { projection: { nickname: 1, runningLogs: 1 } }
         );
 
 		if (!user) {
@@ -45,37 +45,47 @@ const get = (async (fastify): Promise<void> => {
 					})
 				);
 			return;
-		}
-		// Kiểm tra dữ liệu trong mảng runningLogs có dữ liệu của ngày hôm nay ?, nếu chưa thì tạo dữ liệu mặc định
-	const today = new Date();
-	const todayString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-	let hasTodayLog = false;
+		} else if (!user.runningLogs) {
+			reply
+				.code(httpStatus.INTERNAL_SERVER_ERROR)
+				.type('application/json')
+				.send(ApiResponder.instance.error({
+					code: 'httpStatus.INTERNAL_SERVER_ERROR',
+					message: 'RunningLogs not found',
+				}));
+			return;
+		} else {
+			// Kiểm tra dữ liệu trong mảng runningLogs có dữ liệu của ngày hôm nay ?, nếu chưa thì tạo dữ liệu mặc định
+			const today = new Date();
+			const todayString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+			let hasTodayLog = false;
 
-	for (const log of user.runningLogs) {
-    	const logDate = new Date(log._id.getTimestamp());
-    	const logDateString = `${logDate.getFullYear()}-${logDate.getMonth() + 1}-${logDate.getDate()}`;
-    	if (logDateString === todayString) {
-        	hasTodayLog = true;
-        	break;
-    	}
-	}
+			for (const log of user.runningLogs) {
+    			const logDate = new Date(log._id.getTimestamp());
+    			const logDateString = `${logDate.getFullYear()}-${logDate.getMonth() + 1}-${logDate.getDate()}`;
+    			if (logDateString === todayString) {
+        			hasTodayLog = true;
+        			break;
+    			}
+			}
 
-		if (!hasTodayLog) {
-    		const defaultLog = {
-        	_id: new ObjectId(),
-        	seconds: 0,
-        	steps: 0,
-        	distance: 0,
-    	};
+			if (!hasTodayLog) {
+    			const defaultLog = {
+        		_id: new ObjectId(),
+        		seconds: 0,
+        		steps: 0,
+        		distance: 0,
+    		};
 			user.runningLogs.push(defaultLog);
 
-		// Cập nhật dữ liệu mặc định vào database
+			// Cập nhật dữ liệu mặc định vào database
 			await DbClient.instance.collections.users.updateOne(
 				{ email: user.email },
 				{ $set: { runningLogs: user.runningLogs } }
-			);
+				);
+			}
 		}
-
+		
 		reply
     		.code(httpStatus.OK)
     		.type('application/json')
