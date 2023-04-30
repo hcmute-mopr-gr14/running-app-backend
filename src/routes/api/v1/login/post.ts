@@ -53,14 +53,14 @@ const post = (async (fastify): Promise<void> => {
 			return;
 		}
 
+		await reply.setSession(
+			{ user: { _id: user._id.toHexString() } },
+			{ expiresIn: '1d' }
+		);
 		reply
 			.code(httpStatus.OK)
 			.type('application/json')
-			.setSession(
-				{ user: { _id: user._id.toHexString() } },
-				{ expiresIn: '1d' }
-			)
-			.send(ApiResponder.instance.data({}));
+			.send(ApiResponder.instance.data({ a: 1 }));
 	});
 }) satisfies FastifyPluginAsyncTypebox;
 
