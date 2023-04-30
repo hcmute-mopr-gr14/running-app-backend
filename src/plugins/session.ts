@@ -8,10 +8,7 @@ declare module 'fastify' {
 		session?: SessionData;
 	}
 	export interface FastifyReply {
-		setSession: (
-			session: SessionData,
-			options?: jwt.SignOptions
-		) => FastifyReply;
+		setSession: (session: SessionData, options?: jwt.SignOptions) => void;
 	}
 	export interface SessionData {
 		user: {
@@ -51,7 +48,6 @@ export default fp(async (fastify, opts) => {
 			if (!error) {
 				this.setCookie('session_token', encoded);
 			}
-			return this;
 		}
 	);
 });
