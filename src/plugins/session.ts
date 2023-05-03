@@ -46,7 +46,12 @@ export default fp(async (fastify, opts) => {
 				options
 			);
 			if (!error) {
-				this.setCookie('session_token', encoded);
+				this.setCookie('session_token', encoded, {
+					httpOnly: true,
+					secure: process.env.NODE_ENV === 'production',
+					sameSite: true,
+					path: '/',
+				});
 			}
 		}
 	);
