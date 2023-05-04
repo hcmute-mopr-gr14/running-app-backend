@@ -14,7 +14,6 @@ const post = (async (fastify): Promise<void> => {
 		body: Type.Object({
 			email: Type.String(),
 			password: Type.String(),
-			nickname: Type.String(),
 		}),
 		response: {
 			200: ApiResponseSchema.instance.ofData(Type.Object({})),
