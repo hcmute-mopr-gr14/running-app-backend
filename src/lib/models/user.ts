@@ -1,11 +1,11 @@
-import { ObjectId } from "mongodb";
+import { ObjectId } from 'mongodb';
 
 export default interface User {
 	email: string;
 	password: string;
 	sessionToken?: string;
 	nickname: string;
-	runningLogs: RunningLog[];
+	runningLogs?: RunningLog[];
 }
 
 interface RunningLog {
