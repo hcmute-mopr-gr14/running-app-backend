@@ -7,7 +7,6 @@ import httpStatus = require('http-status');
 import { DbClient } from '~/lib/services/db-client';
 import { ApiResponseSchema } from '~/lib/services/api-response-schema';
 import { ApiResponder } from '~/lib/services/api-responder';
-import { ObjectId } from 'mongodb';
 import * as bcrypt from 'bcrypt';
 
 const post = (async (fastify): Promise<void> => {
@@ -45,6 +44,7 @@ const post = (async (fastify): Promise<void> => {
 		await DbClient.instance.collections.users.insertOne({
 			email: request.body.email,
 			password: hashedPassword,
+			nickname: '',
 		});
 
 		reply
