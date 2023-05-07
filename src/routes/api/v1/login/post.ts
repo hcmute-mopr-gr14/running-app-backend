@@ -40,7 +40,7 @@ const post = (async (fastify): Promise<void> => {
 			return;
 		}
 
-		if (!bcrypt.compare(request.body.password, user.password)) {
+		if (!(await bcrypt.compare(request.body.password, user.password))) {
 			reply
 				.code(httpStatus.UNAUTHORIZED)
 				.type('application/json')
