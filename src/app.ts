@@ -8,6 +8,7 @@ import { DbClient } from './lib/services/db-client';
 import * as dotenv from 'dotenv';
 import { TokenService } from './lib/services/token-service';
 import { ApiResponder } from './lib/services/api-responder';
+import multipart from '@fastify/multipart';
 
 export type AppOptions = {
 	// Place your custom options for app below here.
@@ -44,6 +45,8 @@ const app: FastifyPluginAsync<AppOptions> = async (
 	fastify.addHook('onClose', async () => {
 		await DbClient.instance.close(true);
 	});
+
+	fastify.register(multipart);
 
 	// Do not touch the following lines
 
