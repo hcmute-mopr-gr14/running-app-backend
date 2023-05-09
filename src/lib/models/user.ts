@@ -5,6 +5,8 @@ export default interface User {
 	password: string;
 	nickname: string;
 	runs?: Run[];
+	publicId: string;
+	version: number;
 }
 
 export interface Run {
