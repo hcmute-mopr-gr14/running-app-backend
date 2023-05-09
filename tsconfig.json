@@ -8,7 +8,8 @@
 			"~/*": ["src/*"]
 		},
 		"incremental": true,
-		"tsBuildInfoFile": "dist/.tsbuildinfo"
+		"tsBuildInfoFile": "dist/.tsbuildinfo",
+		"noUnusedLocals": false
 	},
 	"include": ["src/**/*.ts"]
 }
