@@ -3,14 +3,17 @@ import { ObjectId } from 'mongodb';
 export default interface User {
 	email: string;
 	password: string;
-	sessionToken?: string;
 	nickname: string;
-	runningLogs?: RunningLog[];
+	runs?: Run[];
 }
 
-interface RunningLog {
+interface Run {
 	_id: ObjectId;
+	rounds: Round[];
+}
+
+interface Round {
+	points: [number, number][];
+	meters: number;
 	seconds: number;
-	steps: number;
-	distance: number;
 }
