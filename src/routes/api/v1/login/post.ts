@@ -16,7 +16,9 @@ const post = (async (fastify): Promise<void> => {
 			password: Type.String(),
 		}),
 		response: {
-			200: ApiResponseSchema.instance.ofData(Type.Object({})),
+			200: ApiResponseSchema.instance.ofData(
+				Type.Object({ _id: Type.String() })
+			),
 			400: ApiResponseSchema.instance.ofError(),
 		},
 	} satisfies FastifySchema;
@@ -60,7 +62,7 @@ const post = (async (fastify): Promise<void> => {
 		reply
 			.code(httpStatus.OK)
 			.type('application/json')
-			.send(ApiResponder.instance.data({ a: 1 }));
+			.send(ApiResponder.instance.data({ _id: user._id.toHexString() }));
 	});
 }) satisfies FastifyPluginAsyncTypebox;
 
