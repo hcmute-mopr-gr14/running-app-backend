@@ -7,13 +7,19 @@ export default interface User {
 	runs?: Run[];
 }
 
-interface Run {
+export interface Run {
 	_id: ObjectId;
+	date: string;
 	rounds: Round[];
 }
 
-interface Round {
-	points: [number, number][];
+export interface Round {
+	points: LatLng[];
 	meters: number;
 	seconds: number;
+}
+
+export interface LatLng {
+	lat: number;
+	lng: number;
 }
