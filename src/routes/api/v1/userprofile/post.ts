@@ -9,7 +9,6 @@ import { DbClient } from '~/lib/services/db-client';
 import { ApiResponseSchema } from '~/lib/services/api-response-schema';
 import { ApiResponder } from '~/lib/services/api-responder';
 import { ObjectId } from 'mongodb';
-import fastifyMultipart = require('@fastify/multipart');
 import * as sharp from 'sharp';
 
 // Configuration
@@ -37,7 +36,6 @@ const uploadImage = (
 };
 
 const post = (async (fastify): Promise<void> => {
-	fastify.register(fastifyMultipart);
 	const schema = {
 		response: {
 			200: ApiResponseSchema.instance.ofData(
