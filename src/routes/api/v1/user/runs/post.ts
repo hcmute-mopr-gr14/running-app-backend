@@ -72,7 +72,6 @@ const post = (async (fastify): Promise<void> => {
 				{ $limit: 1 },
 			])
 			.next();
-		console.log(current);
 
 		let updateResult: UpdateResult;
 		if (current) {
