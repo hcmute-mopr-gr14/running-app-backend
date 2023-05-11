@@ -4,6 +4,7 @@ import get from './get';
 
 const route = (async (fastify, opts): Promise<void> => {
 	get(fastify);
+	post(fastify);
 }) satisfies FastifyPluginAsyncTypebox;
 
 export default route;
