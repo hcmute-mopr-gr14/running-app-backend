@@ -102,7 +102,6 @@ const post = (async (fastify): Promise<void> => {
 					{ _id: user._id },
 					{
 						$set: {
-							avatarUrl: result?.secure_url,
 							publicId: result?.public_id,
 							version: result?.version,
 						},
