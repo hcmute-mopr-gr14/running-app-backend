@@ -4,12 +4,15 @@ import {
 } from '@fastify/type-provider-typebox';
 import { FastifySchema } from 'fastify';
 import httpStatus = require('http-status');
-import { UploadApiResponse, v2 as cloudinary } from 'cloudinary';
+import {
+	UploadApiOptions,
+	UploadApiResponse,
+	v2 as cloudinary,
+} from 'cloudinary';
 import { DbClient } from '~/lib/services/db-client';
 import { ApiResponseSchema } from '~/lib/services/api-response-schema';
 import { ApiResponder } from '~/lib/services/api-responder';
 import { ObjectId } from 'mongodb';
-import * as sharp from 'sharp';
 
 // Configuration
 cloudinary.config({
@@ -20,7 +23,7 @@ cloudinary.config({
 
 const uploadImage = (
 	imageBuffer: Buffer,
-	options: any
+	options?: UploadApiOptions
 ): Promise<UploadApiResponse | undefined> => {
 	return new Promise((resolve, reject) => {
 		cloudinary.uploader
@@ -84,18 +87,13 @@ const post = (async (fastify): Promise<void> => {
 			const fileBuffer = await data.toBuffer();
 			const timestamp = Date.now();
 			const uniqueFileName = `${request.session.user._id}_${timestamp}`; // Tạo tên file duy nhất
-			const options = {
-				public_id: uniqueFileName,
-				folder: 'running_app',
-			};
-
-			const resizedImageBuffer = await sharp(fileBuffer)
-				.resize(100, 100) // Chiều rộng là 100px, chiều cao tự động theo tỉ lệ
-				.toBuffer();
 
 			try {
-				const result = await uploadImage(resizedImageBuffer, options);
-				console.log(result);
+				const result = await uploadImage(fileBuffer, {
+					transformation: { size: 100 },
+					public_id: uniqueFileName,
+					folder: 'running_app',
+				});
 
 				// Cập nhật avatarUrl trong MongoDB
 				await DbClient.instance.collections.users.updateOne(
