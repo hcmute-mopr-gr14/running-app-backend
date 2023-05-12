@@ -20,6 +20,7 @@ const get = (async (fastify): Promise<void> => {
 		response: {
 			'2xx': ApiResponseSchema.instance.ofData(
 				Type.Object({
+					_id: Type.String(),
 					email: Type.String(),
 					nickname: Type.String(),
 					imageUrl: Type.String(),
@@ -55,8 +56,8 @@ const get = (async (fastify): Promise<void> => {
 			}
 		);
 
-		const imageUrl = user
-			? cloudinary.image(user.publicId, { version: user.version })
+		const imageUrl = user?.publicId
+			? cloudinary.url(user.publicId, { version: user.version })
 			: defaultimageUrl;
 
 		const nickname = user
@@ -81,6 +82,7 @@ const get = (async (fastify): Promise<void> => {
 			.type('application/json')
 			.send(
 				ApiResponder.instance.data({
+					_id: user._id.toHexString(),
 					email: user.email,
 					nickname: nickname,
 					imageUrl: imageUrl,
