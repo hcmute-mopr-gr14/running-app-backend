@@ -44,6 +44,8 @@ const post = (async (fastify): Promise<void> => {
 			email: request.body.email,
 			password: hashedPassword,
 			nickname: '',
+			publicId: '',
+			version: 0,
 		});
 
 		reply
