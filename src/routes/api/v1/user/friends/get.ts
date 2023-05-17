@@ -51,7 +51,14 @@ const get = (async (fastify): Promise<void> => {
 						newRoot: '$info',
 					},
 				},
-				{ $project: { password: 0 } },
+				{
+					$project: {
+						password: 0,
+						friends: 0,
+						incomingFriendRequests: 0,
+						outgoingFriendRequests: 0,
+					},
+				},
 			])
 			.toArray();
 		reply
