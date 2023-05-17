@@ -22,7 +22,9 @@ DbClient.useOptions({
 });
 
 TokenService.useOptions({
-	secret: crypto.randomBytes(256).toString('base64'),
+	// secret: crypto.randomBytes(256).toString('base64'),
+	secret:
+		process.env.JWT_SECRET || crypto.randomBytes(256).toString('base64'),
 });
 
 ApiResponder.useOptions({
