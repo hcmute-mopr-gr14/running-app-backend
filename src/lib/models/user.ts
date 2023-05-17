@@ -4,9 +4,12 @@ export default interface User {
 	email: string;
 	password: string;
 	nickname: string;
-	runs?: Run[];
 	publicId: string;
 	version: number;
+	runs?: Run[];
+	friends?: ObjectId[];
+	outgoingFriendRequests?: ObjectId[];
+	incomingFriendRequests?: ObjectId[];
 }
 
 export interface Run {
