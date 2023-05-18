@@ -52,17 +52,11 @@ const get = (async (fastify): Promise<void> => {
 					_id: 1,
 					email: 1,
 					nickname: 1,
+					publicId: 1,
+					version: 1,
 				},
 			}
 		);
-
-		const imageUrl = user?.publicId
-			? cloudinary.url(user.publicId, { version: user.version })
-			: defaultimageUrl;
-
-		const nickname = user
-			? user.nickname || defaultNickname
-			: defaultNickname;
 
 		if (!user) {
 			reply
@@ -76,6 +70,17 @@ const get = (async (fastify): Promise<void> => {
 				);
 			return;
 		}
+
+		const imageUrl = user?.publicId
+			? cloudinary.url(user.publicId, {
+					version: user.version,
+					transformation: [{ width: 100, height: 100, crop: 'fill' }],
+			  })
+			: defaultimageUrl;
+
+		const nickname = user
+			? user.nickname || defaultNickname
+			: defaultNickname;
 
 		reply
 			.code(httpStatus.OK)

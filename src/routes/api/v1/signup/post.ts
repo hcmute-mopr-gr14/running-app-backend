@@ -16,7 +16,11 @@ const post = (async (fastify): Promise<void> => {
 			password: Type.String(),
 		}),
 		response: {
-			200: ApiResponseSchema.instance.ofData(Type.Object({})),
+			200: ApiResponseSchema.instance.ofData(
+				Type.Object({
+					message: Type.String(),
+				})
+			),
 			400: ApiResponseSchema.instance.ofError(),
 		},
 	} satisfies FastifySchema;

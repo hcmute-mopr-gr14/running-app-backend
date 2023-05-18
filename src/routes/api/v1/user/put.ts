@@ -14,11 +14,15 @@ const put = (async (fastify): Promise<void> => {
 	const schema = {
 		body: Type.Object({
 			currentPassword: Type.String(),
-			newPassword: Type.Optional(Type.String()),
+			newPassword: Type.String(),
 			nickname: Type.Optional(Type.String()),
 		}),
 		response: {
-			200: ApiResponseSchema.instance.ofData(Type.Object({})),
+			200: ApiResponseSchema.instance.ofData(
+				Type.Object({
+					message: Type.String(),
+				})
+			),
 			400: ApiResponseSchema.instance.ofError(),
 		},
 	} satisfies FastifySchema;

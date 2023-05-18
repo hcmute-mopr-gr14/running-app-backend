@@ -90,7 +90,7 @@ const post = (async (fastify): Promise<void> => {
 
 			try {
 				const result = await uploadImage(fileBuffer, {
-					transformation: { size: 100 },
+					eager: { width: 100, height: 100, crop: 'fill' },
 					public_id: uniqueFileName,
 					folder: 'running_app',
 				});
