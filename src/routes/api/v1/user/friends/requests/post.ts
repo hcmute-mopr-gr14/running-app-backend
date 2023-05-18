@@ -72,6 +72,35 @@ const post = (async (fastify): Promise<void> => {
 			return;
 		}
 
+		const count = await DbClient.instance.collections.users.countDocuments({
+			$and: [
+				{
+					_id: friend._id,
+				},
+				{
+					$or: [
+						{ friends: userId },
+						{ incomingFriendRequests: userId },
+						{ outcomingFriendRequests: userId },
+					],
+				},
+			],
+		});
+
+		if (count) {
+			reply
+				.code(httpStatus.CONFLICT)
+				.type('application/json')
+				.send(
+					ApiResponder.instance.error({
+						code: 'ALREADY_FRIEND_OR_REQUEST_ERROR',
+						message:
+							'This user is already a friend or you have already sent a request',
+					})
+				);
+			return;
+		}
+
 		await Promise.all([
 			DbClient.instance.collections.users.updateOne(
 				{
