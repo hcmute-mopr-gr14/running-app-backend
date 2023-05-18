@@ -8,6 +8,8 @@ import { DbClient } from '~/lib/services/db-client';
 import { ApiResponseSchema } from '~/lib/services/api-response-schema';
 import { ApiResponder } from '~/lib/services/api-responder';
 import { ObjectId } from 'mongodb';
+import User from '~/lib/models/user';
+import { withImageUrl } from '~/lib/utils';
 
 const get = (async (fastify): Promise<void> => {
 	const schema = {
@@ -31,8 +33,8 @@ const get = (async (fastify): Promise<void> => {
 			return;
 		}
 
-		const user = await DbClient.instance.collections.users
-			.aggregate([
+		const friends = await DbClient.instance.collections.users
+			.aggregate<User>([
 				{ $match: { _id: new ObjectId(request.session.user._id) } },
 				{ $limit: 1 },
 				{ $project: { friends: 1, _id: 0 } },
@@ -53,10 +55,9 @@ const get = (async (fastify): Promise<void> => {
 				},
 				{
 					$project: {
-						password: 0,
-						friends: 0,
-						incomingFriendRequests: 0,
-						outgoingFriendRequests: 0,
+						email: 1,
+						nickname: 1,
+						image: 1,
 					},
 				},
 			])
@@ -64,7 +65,11 @@ const get = (async (fastify): Promise<void> => {
 		reply
 			.code(httpStatus.OK)
 			.type('application/json')
-			.send(ApiResponder.instance.data((user || []) as any));
+			.send(
+				ApiResponder.instance.data(
+					friends?.map((friend) => withImageUrl(friend)) || []
+				)
+			);
 	});
 }) satisfies FastifyPluginAsyncTypebox;
 
