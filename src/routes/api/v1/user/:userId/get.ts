@@ -8,13 +8,13 @@ import { DbClient } from '~/lib/services/db-client';
 import { ApiResponseSchema } from '~/lib/services/api-response-schema';
 import { ApiResponder } from '~/lib/services/api-responder';
 import { ObjectId } from 'mongodb';
-import { v2 as cloudinary } from 'cloudinary';
 import { withImageUrl } from '~/lib/utils';
-
-const defaultNickname = 'Runner';
 
 const get = (async (fastify): Promise<void> => {
 	const schema = {
+		params: {
+			userId: Type.String(),
+		},
 		response: {
 			'2xx': ApiResponseSchema.instance.ofData(Type.Any()),
 			'4xx': ApiResponseSchema.instance.ofError(),
@@ -37,7 +37,7 @@ const get = (async (fastify): Promise<void> => {
 		}
 
 		const user = await DbClient.instance.collections.users.findOne(
-			{ _id: new ObjectId(request.session.user._id) },
+			{ _id: new ObjectId((request.params as any).userId) },
 			{
 				projection: {
 					_id: 1,
@@ -64,7 +64,15 @@ const get = (async (fastify): Promise<void> => {
 		reply
 			.code(httpStatus.OK)
 			.type('application/json')
-			.send(ApiResponder.instance.data(withImageUrl(user)));
+			.send(
+				ApiResponder.instance.data(
+					withImageUrl(user, {
+						width: 200,
+						height: 200,
+						crop: 'fill',
+					})
+				)
+			);
 	});
 }) satisfies FastifyPluginAsyncTypebox;
 

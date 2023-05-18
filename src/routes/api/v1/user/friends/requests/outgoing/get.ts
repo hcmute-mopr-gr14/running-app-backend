@@ -3,15 +3,13 @@ import {
 	Type,
 } from '@fastify/type-provider-typebox';
 import { FastifySchema } from 'fastify';
-import httpStatus = require('http-status');
+import * as httpStatus from 'http-status';
 import { DbClient } from '~/lib/services/db-client';
 import { ApiResponseSchema } from '~/lib/services/api-response-schema';
 import { ApiResponder } from '~/lib/services/api-responder';
 import { ObjectId } from 'mongodb';
-import { v2 as cloudinary } from 'cloudinary';
 import { withImageUrl } from '~/lib/utils';
-
-const defaultNickname = 'Runner';
+import User from '~/lib/models/user';
 
 const get = (async (fastify): Promise<void> => {
 	const schema = {
@@ -22,49 +20,56 @@ const get = (async (fastify): Promise<void> => {
 	} satisfies FastifySchema;
 
 	fastify.get('/', { schema }, async function (request, reply) {
-		// Kiểm tra session đăng nhập
-		if (!request.session?.user?._id) {
+		if (!request.session) {
 			reply
 				.code(httpStatus.UNAUTHORIZED)
 				.type('application/json')
 				.send(
 					ApiResponder.instance.error({
-						code: 'httpStatus.UNAUTHORIZED',
-						message: 'Unauthorized access',
+						code: 'UNAUTHORIZED_ERROR',
+						message: 'Not authorized',
 					})
 				);
 			return;
 		}
 
-		const user = await DbClient.instance.collections.users.findOne(
-			{ _id: new ObjectId(request.session.user._id) },
-			{
-				projection: {
-					_id: 1,
-					email: 1,
-					nickname: 1,
-					image: 1,
+		const users = await DbClient.instance.collections.users
+			.aggregate<User>([
+				{ $match: { _id: new ObjectId(request.session.user._id) } },
+				{ $limit: 1 },
+				{ $project: { outgoingFriendRequests: 1, _id: 0 } },
+				{ $unwind: '$outgoingFriendRequests' },
+				{
+					$lookup: {
+						from: 'users',
+						localField: 'outgoingFriendRequests',
+						foreignField: '_id',
+						as: 'info',
+					},
 				},
-			}
-		);
-
-		if (!user) {
-			reply
-				.code(httpStatus.NOT_FOUND)
-				.type('application/json')
-				.send(
-					ApiResponder.instance.error({
-						code: 'httpStatus.NOT_FOUND',
-						message: 'User not found',
-					})
-				);
-			return;
-		}
-
+				{ $unwind: '$info' },
+				{
+					$replaceRoot: {
+						newRoot: '$info',
+					},
+				},
+				{
+					$project: {
+						email: 1,
+						nickname: 1,
+						image: 1,
+					},
+				},
+			])
+			.toArray();
 		reply
 			.code(httpStatus.OK)
 			.type('application/json')
-			.send(ApiResponder.instance.data(withImageUrl(user)));
+			.send(
+				ApiResponder.instance.data(
+					users.map((v) => withImageUrl(v)) || []
+				)
+			);
 	});
 }) satisfies FastifyPluginAsyncTypebox;
 

@@ -21,6 +21,8 @@ DbClient.useOptions({
 	dbName: 'running-app',
 });
 
+DbClient.instance.collections.users.createIndex({ email: 1 });
+
 TokenService.useOptions({
 	// secret: crypto.randomBytes(256).toString('base64'),
 	secret:
