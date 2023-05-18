@@ -10,6 +10,7 @@ export function withImageUrl(
 					version: user.image.version,
 					format: user.image.format,
 					resource_type: 'image',
+					secure: true,
 			  })
 			: '',
 	});
