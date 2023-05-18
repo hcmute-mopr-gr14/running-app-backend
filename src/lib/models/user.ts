@@ -4,6 +4,11 @@ export default interface User {
 	email: string;
 	password: string;
 	nickname: string;
+	image?: {
+		publicId: string;
+		version: number;
+		format: string;
+	};
 	publicId: string;
 	version: number;
 	runs?: Run[];
