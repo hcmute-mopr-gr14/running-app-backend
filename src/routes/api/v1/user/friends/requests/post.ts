@@ -72,6 +72,19 @@ const post = (async (fastify): Promise<void> => {
 			return;
 		}
 
+		if (friend._id.equals(session.user._id)) {
+			reply
+				.code(httpStatus.NOT_FOUND)
+				.type('application/json')
+				.send(
+					ApiResponder.instance.error({
+						code: 'SELF_REQUEST_ERROR',
+						message: 'Cannot send request to self',
+					})
+				);
+			return;
+		}
+
 		const count = await DbClient.instance.collections.users.countDocuments({
 			$and: [
 				{
